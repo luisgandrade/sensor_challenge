@@ -11,18 +11,21 @@ namespace Challenge.Models
 
         public DateTime Timestamp { get; private set; }
 
-        public EventStatus Status { get; private set; }
+        public bool Error { get; set; }
 
         public string Value { get; private set; }
 
-        public SensorEvent(Sensor sensor, DateTime timestamp, EventStatus status, string value)
+        public EventValueType ValueType { get; set; }
+
+        public SensorEvent(Sensor sensor, DateTime timestamp, bool error, string value, EventValueType valueType)
         {
             if (sensor is null)
                 throw new ArgumentNullException(nameof(sensor));
             
             Timestamp = timestamp;
-            Status = status;
+            Error = error;
             Value = value;
+            ValueType = valueType;
         }
     }
 }

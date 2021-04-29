@@ -12,7 +12,7 @@ namespace Challenge.Models
 
         public string Name { get; private set; }
 
-        public Sensor(string country, string region, string name, DateTime timestamp, EventStatus status, string value)
+        public Sensor(string country, string region, string name)
         {
             if (string.IsNullOrWhiteSpace(country))
                 throw new ArgumentNullException(nameof(country));

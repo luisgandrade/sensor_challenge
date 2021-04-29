@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Challenge.Models
 {
-    public enum EventStatus
+    public enum EventValueType
     {
-        success = 0,
-        error = 1
+        NotApplicable = 0,
+        String = 1,
+        Numeric = 2
     }
 }

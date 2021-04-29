@@ -9,7 +9,7 @@ namespace Challenge.Database.Repositories
     public interface ISensorRepository
     {
 
-        Task Insert(Sensor sensor);
+        Task<Sensor> Insert(Sensor sensor);
 
         Task<IList<Sensor>> GetAllSensors();
 
