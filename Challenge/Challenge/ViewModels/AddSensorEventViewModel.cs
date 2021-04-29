@@ -8,11 +8,11 @@ namespace Challenge.ViewModels
     public class AddSensorEventViewModel
     {
 
-        public DateTime Timestamp { get; set; }
+        public virtual DateTime Timestamp { get; set; }
 
-        public string Tag { get; set; }
+        public virtual string Tag { get; set; }
 
-        public string Value { get; set; }
+        public virtual string Value { get; set; }
 
     }
 }

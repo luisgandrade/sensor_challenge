@@ -14,7 +14,7 @@ namespace Challenge.Services
 
         private ConcurrentDictionary<Tuple<string, string, string>, Sensor> _sensors;
 
-        private SensorDictionarySingleton()
+        protected SensorDictionarySingleton()
         {
 
         }

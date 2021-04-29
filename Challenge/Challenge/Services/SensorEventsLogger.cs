@@ -29,9 +29,11 @@ namespace Challenge.Services
             var sensorTagSplit = viewModel.Tag.Split(".").ToList();
             if (sensorTagSplit.Count != 3)
                 throw new ArgumentOutOfRangeException("Expected three parts in the tag.");
+            if (sensorTagSplit.Any(part => string.IsNullOrWhiteSpace(part)))
+                throw new ArgumentNullException("Some part of the tag is empty");
 
             var sensor = _sensorDictionarySingleton.GetSensor(sensorTagSplit[0], sensorTagSplit[1], sensorTagSplit[2]);
-            if(sensor is null)
+            if (sensor is null)
             {
                 sensor = new Sensor(sensorTagSplit[0], sensorTagSplit[1], sensorTagSplit[2]);
                 await _sensorRepository.Insert(sensor);
