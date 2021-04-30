@@ -25,5 +25,10 @@ namespace Challenge.Models
             Region = region;
             Name = name;
         }
+
+        protected Sensor()
+        {
+
+        }
     }
 }

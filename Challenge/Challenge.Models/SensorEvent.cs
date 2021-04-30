@@ -21,7 +21,8 @@ namespace Challenge.Models
         {
             if (sensor is null)
                 throw new ArgumentNullException(nameof(sensor));
-            
+
+            Sensor = sensor;
             Timestamp = timestamp;
             Error = error;
             Value = value;

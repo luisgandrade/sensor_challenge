@@ -32,13 +32,13 @@ namespace Challenge.Services
         }
 
 
-        public Sensor GetSensor(string country, string region, string name)
+        public virtual Sensor GetSensor(string country, string region, string name)
         {
             Sensor sensorFound = null;
             _sensors.TryGetValue(new Tuple<string, string, string>(country, region, name), out sensorFound);
             return sensorFound;
         }
 
-        public void AddSensor(Sensor sensor) => _sensors.TryAdd(new Tuple<string, string, string>(sensor.Country, sensor.Region, sensor.Name), sensor);
+        public virtual void AddSensor(Sensor sensor) => _sensors.TryAdd(new Tuple<string, string, string>(sensor.Country, sensor.Region, sensor.Name), sensor);
     }
 }
