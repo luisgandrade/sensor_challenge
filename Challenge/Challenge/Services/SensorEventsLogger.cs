@@ -10,14 +10,12 @@ namespace Challenge.Services
 {
     public class SensorEventsLogger
     {
-        private SensorDictionarySingleton _sensorDictionarySingleton;
-        private ISensorRepository _sensorRepository;
+        private SensorRepositoryInterface _sensorRespositoryInterface;
         private ISensorEventRepository _sensorEventRepository;
 
-        public SensorEventsLogger(SensorDictionarySingleton sensorDictionarySingleton, ISensorRepository sensorRepository, ISensorEventRepository sensorEventRepository)
+        public SensorEventsLogger(SensorRepositoryInterface sensorRespositoryInterface, ISensorEventRepository sensorEventRepository)
         {
-            _sensorDictionarySingleton = sensorDictionarySingleton;
-            _sensorRepository = sensorRepository;
+            _sensorRespositoryInterface = sensorRespositoryInterface;
             _sensorEventRepository = sensorEventRepository;
         }
 
@@ -28,17 +26,13 @@ namespace Challenge.Services
 
             var sensorTagSplit = viewModel.Tag.Split(".").ToList();
             if (sensorTagSplit.Count != 3)
-                throw new ArgumentOutOfRangeException("Expected three parts in the tag.");
+                throw new FormatException("Expected three parts in the tag.");
             if (sensorTagSplit.Any(part => string.IsNullOrWhiteSpace(part)))
-                throw new ArgumentNullException("Some part of the tag is empty");
+                throw new FormatException("Some part of the tag is empty");
 
-            var sensor = _sensorDictionarySingleton.GetSensor(sensorTagSplit[0], sensorTagSplit[1], sensorTagSplit[2]);
+            var sensor = await _sensorRespositoryInterface.Get(sensorTagSplit[0], sensorTagSplit[1], sensorTagSplit[2]);
             if (sensor is null)
-            {
-                sensor = new Sensor(sensorTagSplit[0], sensorTagSplit[1], sensorTagSplit[2]);
-                await _sensorRepository.Insert(sensor);
-                _sensorDictionarySingleton.AddSensor(sensor);
-            }
+                throw new Exception("Sensor not registered");
 
             var isError = string.IsNullOrWhiteSpace(viewModel.Value);
             var valueType = EventValueType.NotApplicable;

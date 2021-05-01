@@ -9,6 +9,8 @@ namespace Challenge.Database.Repositories
     public interface ISensorRepository
     {
 
+        Task<Sensor> GetByTagParameters(string country, string region, string name);
+
         Task<Sensor> Insert(Sensor sensor);
 
         Task<IList<Sensor>> GetAllSensors();

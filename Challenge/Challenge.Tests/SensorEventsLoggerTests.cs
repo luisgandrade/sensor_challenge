@@ -20,9 +20,9 @@ namespace Challenge.Tests
 
             var viewModel = Mock.Of<AddSensorEventViewModel>(vm => vm.Tag == tag);
 
-            var sensorEventsLogger = new SensorEventsLogger(Mock.Of<SensorDictionarySingleton>(), Mock.Of<ISensorRepository>(), Mock.Of<ISensorEventRepository>());
+            var sensorEventsLogger = new SensorEventsLogger(Mock.Of<SensorRepositoryInterface>(), Mock.Of<ISensorEventRepository>());
 
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async() => await sensorEventsLogger.LogEvent(viewModel));
+            await Assert.ThrowsAsync<FormatException>(async() => await sensorEventsLogger.LogEvent(viewModel));
         }
 
         [Theory]
@@ -34,9 +34,9 @@ namespace Challenge.Tests
 
             var viewModel = Mock.Of<AddSensorEventViewModel>(vm => vm.Tag == tag);
 
-            var sensorEventsLogger = new SensorEventsLogger(Mock.Of<SensorDictionarySingleton>(), Mock.Of<ISensorRepository>(), Mock.Of<ISensorEventRepository>());
+            var sensorEventsLogger = new SensorEventsLogger(Mock.Of<SensorRepositoryInterface>(), Mock.Of<ISensorEventRepository>());
 
-            await Assert .ThrowsAsync<ArgumentNullException>(async () => await sensorEventsLogger.LogEvent(viewModel));
+            await Assert .ThrowsAsync<FormatException>(async () => await sensorEventsLogger.LogEvent(viewModel));
         }
 
         [Fact]
@@ -52,10 +52,10 @@ namespace Challenge.Tests
                 Tag = $"{country}.{region}.{name}",
                 Value = "1"
             };
-            var sensorDictionarySingleton = Mock.Of<SensorDictionarySingleton>(sds => sds.GetSensor(country, region, name) == existingSensor);
+            var sensorRepositoryInterface = Mock.Of<SensorRepositoryInterface>(sri => sri.Get(country, region, name) == Task.FromResult(existingSensor));
             var sensorEventRepository = new Mock<ISensorEventRepository>();
 
-            var sensorEventsLogger = new SensorEventsLogger(sensorDictionarySingleton, Mock.Of<ISensorRepository>(), sensorEventRepository.Object);
+            var sensorEventsLogger = new SensorEventsLogger(sensorRepositoryInterface, sensorEventRepository.Object);
 
             var sensorEvent = await sensorEventsLogger.LogEvent(viewModel);
 
@@ -74,17 +74,13 @@ namespace Challenge.Tests
                 Tag = $"{country}.{region}.{name}",
                 Value = "1"
             };
-            var sensorDictionarySingletonMock = new Mock<SensorDictionarySingleton>();
-            sensorDictionarySingletonMock.Setup(sds => sds.GetSensor(country, region, name)).Returns<Sensor>(null);
-            sensorDictionarySingletonMock.Setup(sds => sds.AddSensor(It.IsAny<Sensor>())).Callback<Sensor>(_ => { });
-            var sensorRepositoryMock = new Mock<ISensorRepository>();
+            var sensorDictionarySingletonMock = new Mock<SensorRepositoryInterface>();
+            sensorDictionarySingletonMock.Setup(sds => sds.Get(country, region, name)).Returns(() => Task.FromResult((Sensor)null));
+            
+            var sensorEventsLogger = new SensorEventsLogger(sensorDictionarySingletonMock.Object, Mock.Of<ISensorEventRepository>());
 
-            var sensorEventsLogger = new SensorEventsLogger(sensorDictionarySingletonMock.Object, sensorRepositoryMock.Object, Mock.Of<ISensorEventRepository>());
+            await Assert.ThrowsAsync<Exception>(async () => await sensorEventsLogger.LogEvent(viewModel));
 
-            var sensorEvent = await sensorEventsLogger.LogEvent(viewModel);
-
-            sensorDictionarySingletonMock.Verify(sr => sr.AddSensor(It.Is<Sensor>(s => s.Country == country && s.Region == region && s.Name == name)), Times.Once());
-            sensorRepositoryMock.Verify(sr => sr.Insert(It.Is<Sensor>(s => s.Country == country && s.Region == region && s.Name == name)), Times.Once());
         }
 
         [Fact]
@@ -100,10 +96,10 @@ namespace Challenge.Tests
                 Tag = $"{country}.{region}.{name}",
                 Value = ""
             };
-            var sensorDictionarySingleton = Mock.Of<SensorDictionarySingleton>(sds => sds.GetSensor(country, region, name) == existingSensor);
+            var sensorRepositoryInterface = Mock.Of<SensorRepositoryInterface>(sds => sds.Get(country, region, name) == Task.FromResult(existingSensor));
             var sensorEventRepository = new Mock<ISensorEventRepository>();
 
-            var sensorEventsLogger = new SensorEventsLogger(sensorDictionarySingleton, Mock.Of<ISensorRepository>(), sensorEventRepository.Object);
+            var sensorEventsLogger = new SensorEventsLogger(sensorRepositoryInterface, sensorEventRepository.Object);
 
             var sensorEvent = await sensorEventsLogger.LogEvent(viewModel);
 
@@ -126,10 +122,10 @@ namespace Challenge.Tests
                 Tag = $"{country}.{region}.{name}",
                 Value = value
             };
-            var sensorDictionarySingleton = Mock.Of<SensorDictionarySingleton>(sds => sds.GetSensor(country, region, name) == existingSensor);
+            var sensorRepositoryInterface = Mock.Of<SensorRepositoryInterface>(sri => sri.Get(country, region, name) == Task.FromResult(existingSensor));
             var sensorEventRepository = new Mock<ISensorEventRepository>();
 
-            var sensorEventsLogger = new SensorEventsLogger(sensorDictionarySingleton, Mock.Of<ISensorRepository>(), sensorEventRepository.Object);
+            var sensorEventsLogger = new SensorEventsLogger(sensorRepositoryInterface, sensorEventRepository.Object);
 
             var sensorEvent = await sensorEventsLogger.LogEvent(viewModel);
 
