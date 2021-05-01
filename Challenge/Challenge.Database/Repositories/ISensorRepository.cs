@@ -10,14 +10,14 @@ namespace Challenge.Database.Repositories
     {
 
         Task<Sensor> Get(int id);
-        Task<Sensor> Insert(Sensor sensor);
 
         Task<Sensor> GetByTagParameters(string country, string region, string name);
-
 
         Task<IList<Sensor>> GetAllSensors();
 
         Task<IList<KeyValuePair<Sensor, int>>> GetEventCountOfSensors();
+
+        Task Insert(Sensor sensor);
 
     }
 }
