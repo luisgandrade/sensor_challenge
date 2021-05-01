@@ -6,6 +6,8 @@ namespace Challenge.Models
 {
     public class Sensor
     {
+        public int Id { get; private set; }
+
         public string Country { get; private set; }
 
         public string Region { get; private set; }

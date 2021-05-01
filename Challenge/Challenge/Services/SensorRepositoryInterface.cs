@@ -31,6 +31,24 @@ namespace Challenge.Services
                 sensor);
 
 
+        public virtual async Task<IList<Sensor>> GetAll()
+        {
+            var allSensors = await _sensorRepository.GetAllSensors();
+            foreach (var sensor in allSensors)
+                _sensorsCache.TryAdd(new Tuple<string, string, string>(sensor.Country, sensor.Region, sensor.Name), sensor);
+
+            return allSensors;
+        }
+
+        public virtual async Task<Sensor> Get(int id)
+        {
+            var sensor = await _sensorRepository.Get(id);
+            if(sensor != null)
+                _sensorsCache.TryAdd(new Tuple<string, string, string>(sensor.Country, sensor.Region, sensor.Name), sensor);
+
+            return sensor;
+        }
+
         public virtual async Task<Sensor> Get(string country, string region, string name)
         {
             Sensor sensorFound = null;
@@ -50,6 +68,9 @@ namespace Challenge.Services
             _sensorsCache.TryAdd(new Tuple<string, string, string>(country, region, name), newSensor);
             return newSensor;
         }
+
+
+        public virtual async Task<IList<KeyValuePair<Sensor, int>>> GetEventCountOfSensors() => await _sensorRepository.GetEventCountOfSensors();
 
     }
 }

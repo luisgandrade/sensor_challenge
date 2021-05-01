@@ -12,9 +12,6 @@ namespace Challenge.Tests
 {
     public class SensorRepositoryInterfaceTests
     {
-
-
-
         [Fact]
         public async Task ShouldTryToGetSensorInRepositoryIfItIsNotCached()
         {
