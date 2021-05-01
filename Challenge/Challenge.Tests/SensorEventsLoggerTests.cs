@@ -75,7 +75,7 @@ namespace Challenge.Tests
                 Value = "1"
             };
             var sensorDictionarySingletonMock = new Mock<SensorRepositoryInterface>();
-            sensorDictionarySingletonMock.Setup(sds => sds.Get(country, region, name)).Returns(() => Task.FromResult((Sensor)null));
+            sensorDictionarySingletonMock.Setup(sds => sds.Get(country, region, name)).ReturnsAsync((Sensor) null);
             
             var sensorEventsLogger = new SensorEventsLogger(sensorDictionarySingletonMock.Object, Mock.Of<ISensorEventRepository>());
 

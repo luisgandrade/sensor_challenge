@@ -14,14 +14,16 @@ namespace Challenge.Services
 
         private readonly ISensorRepository _sensorRepository;
 
-        public SensorRepositoryInterface(ISensorRepository sensorRepository)
-        {
-            _sensorRepository = sensorRepository;
-        }
         protected SensorRepositoryInterface()
         {
-
+            _sensorsCache = new ConcurrentDictionary<Tuple<string, string, string>, Sensor>();
         }
+
+        public SensorRepositoryInterface(ISensorRepository sensorRepository) 
+            : this()
+        {
+            _sensorRepository = sensorRepository;
+        }        
 
         private KeyValuePair<Tuple<string, string, string>, Sensor> CreateDictionaryEntry(Sensor sensor) =>
             new KeyValuePair<Tuple<string, string, string>, Sensor>(
@@ -41,10 +43,10 @@ namespace Challenge.Services
             return sensorFound;
         }
 
-        public virtual Sensor Insert(string country, string region, string name)
+        public virtual async Task<Sensor> Insert(string country, string region, string name)
         {
             var newSensor = new Sensor(country, region, name);
-            _sensorRepository.Insert(newSensor);
+            await _sensorRepository.Insert(newSensor);
             _sensorsCache.TryAdd(new Tuple<string, string, string>(country, region, name), newSensor);
             return newSensor;
         }
