@@ -32,6 +32,16 @@ namespace Challenge
             services.AddScoped<SensorEventsLogger>();
             services.AddScoped<SensorRepositoryInterface>();
 
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "allowAngularApp",
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:4200");
+                                  });
+            });
+
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -53,6 +63,8 @@ namespace Challenge
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

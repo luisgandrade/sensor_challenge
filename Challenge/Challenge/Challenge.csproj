@@ -25,8 +25,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\models\Sensor.ts" />
+    <None Remove="ClientApp\src\app\models\SensorEvent.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Challenge.Database\Challenge.Database.csproj" />
     <ProjectReference Include="..\Challenge.Models\Challenge.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\models\SensorEvent.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="ClientApp\src\app\models\Sensor.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

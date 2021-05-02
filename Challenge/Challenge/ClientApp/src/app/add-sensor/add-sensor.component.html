@@ -1,0 +1,27 @@
+<h1>Adicionar novo sensor</h1>
+
+
+<form #f="ngForm" (ngSubmit)="submit(f)" novalidate>
+  <p>
+    <label for="country">País</label>
+    <br />
+    <input name="country" [(ngModel)]="sensor.country" required/>
+  </p>
+
+  <p>
+    <label for="region">Região</label>
+    <br />
+    <input name="region" [(ngModel)]="sensor.region" required/>
+  </p>
+
+  <p>
+    <label for="name">Nome</label>
+    <br />
+    <input name="name" [(ngModel)]="sensor.name" required/>
+  </p>
+
+  <p *ngIf="f.submitted && f.invalid">Todos os campos devem ser informados.</p>
+
+  <button>Adicionar</button>
+</form>
+
