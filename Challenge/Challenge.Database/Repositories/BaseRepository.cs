@@ -8,8 +8,8 @@ namespace Challenge.Database.Repositories
     public abstract class BaseRepository : IDisposable
     {
 
-        private IDbConnection _dbConnection;
         private bool disposedValue;
+        protected IDbConnection _dbConnection;
 
         protected BaseRepository(IDbConnection dbConnection)
         {   

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Challenge.Models
 {
+    [Table("SensorEvent")]
     public class SensorEvent
     {
-
         public int Id { get; private set; }
 
-        public Sensor Sensor { get; set; }
+        public int SensorId { get; set; }
 
         public DateTime Timestamp { get; private set; }
 
@@ -22,7 +23,7 @@ namespace Challenge.Models
             if (sensor is null)
                 throw new ArgumentNullException(nameof(sensor));
 
-            Sensor = sensor;
+            SensorId = sensor.Id;
             Timestamp = timestamp;
             Error = error;
             Value = value;

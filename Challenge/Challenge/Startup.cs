@@ -26,7 +26,7 @@ namespace Challenge
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddTransient<IDbConnection>(_ => NpgsqlConnectionFactory.GetConnection(Configuration.GetConnectionString("postgres")));
+            services.AddTransient<IDbConnection>(_ => SqlServerConnectionFactory.GetConnection(Configuration.GetConnectionString("sql-server")));
             services.AddScoped<ISensorRepository, SensorRepository>();
             services.AddScoped<ISensorEventRepository, SensorEventRepository>();
             services.AddScoped<SensorEventsLogger>();

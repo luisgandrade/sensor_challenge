@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Challenge.Models
 {
+    [Table("Sensor")]
     public class Sensor
     {
         public int Id { get; private set; }

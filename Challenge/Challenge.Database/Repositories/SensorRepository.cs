@@ -7,14 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Challenge.Database.Interfaces;
+using Dapper.Contrib.Extensions;
 
 namespace Challenge.Database.Repositories
 {
     public class SensorRepository : BaseRepository, ISensorRepository
     {
-
-        private readonly IDbConnection _dbConnection;
-
         public SensorRepository(IDbConnection dbConnection)
             : base(dbConnection) { }
 
@@ -47,8 +45,8 @@ namespace Challenge.Database.Repositories
         public async Task Insert(Sensor sensor)
         {
             var idAssigned = await _dbConnection.InsertAsync(sensor);
-            if (idAssigned.HasValue)
-                sensor.GetType().GetProperty("Id").SetValue(sensor, idAssigned);
+            
+            sensor.GetType().GetProperty("Id").SetValue(sensor, idAssigned);
         }
     }
 }
