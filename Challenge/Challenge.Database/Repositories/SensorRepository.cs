@@ -6,18 +6,17 @@ using Dapper;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using Challenge.Database.Interfaces;
 
 namespace Challenge.Database.Repositories
 {
-    public class SensorRepository : ISensorRepository
+    public class SensorRepository : BaseRepository, ISensorRepository
     {
 
         private readonly IDbConnection _dbConnection;
 
         public SensorRepository(IDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
+            : base(dbConnection) { }
 
         public async Task<Sensor> Get(int id)
         {
@@ -43,8 +42,6 @@ namespace Challenge.Database.Repositories
                 SELECT s.id, s.country, s.region, s.name, COUNT(se.id) FROM Sensor s
                 INNER JOIN SensorEvent se on s.id = se.sensorId
                 GROUP BY s.id, s.country, s.region, s.name", (sensor, count) => new KeyValuePair<Sensor, int>(sensor, count))).ToList();
-
-            throw new NotImplementedException();
         }
 
         public async Task Insert(Sensor sensor)

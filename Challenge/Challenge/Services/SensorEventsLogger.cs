@@ -1,4 +1,5 @@
-﻿using Challenge.Database.Repositories;
+﻿using Challenge.Database.Interfaces;
+using Challenge.Database.Repositories;
 using Challenge.Models;
 using Challenge.ViewModels;
 using System;

@@ -1,4 +1,5 @@
-﻿using Challenge.Database.Repositories;
+﻿using Challenge.Database.Interfaces;
+using Challenge.Database.Repositories;
 using Challenge.Models;
 using System;
 using System.Collections.Concurrent;
@@ -24,12 +25,6 @@ namespace Challenge.Services
         {
             _sensorRepository = sensorRepository;
         }        
-
-        private KeyValuePair<Tuple<string, string, string>, Sensor> CreateDictionaryEntry(Sensor sensor) =>
-            new KeyValuePair<Tuple<string, string, string>, Sensor>(
-                new Tuple<string, string, string>(sensor.Country, sensor.Region, sensor.Name),
-                sensor);
-
 
         public virtual async Task<IList<Sensor>> GetAll()
         {
@@ -68,7 +63,6 @@ namespace Challenge.Services
             _sensorsCache.TryAdd(new Tuple<string, string, string>(country, region, name), newSensor);
             return newSensor;
         }
-
 
         public virtual async Task<IList<KeyValuePair<Sensor, int>>> GetEventCountOfSensors() => await _sensorRepository.GetEventCountOfSensors();
 

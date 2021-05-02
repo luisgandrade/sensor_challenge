@@ -1,4 +1,5 @@
-﻿using Challenge.Models;
+﻿using Challenge.Database.Interfaces;
+using Challenge.Models;
 using Dapper;
 using System;
 using System.Collections.Generic;
@@ -8,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace Challenge.Database.Repositories
 {
-    public class SensorEventRepository : ISensorEventRepository
+    public class SensorEventRepository : BaseRepository, ISensorEventRepository
     {
 
         private readonly IDbConnection _dbConnection;
 
         public SensorEventRepository(IDbConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
+            : base(dbConnection)
+        { }
 
         public async Task<IList<SensorEvent>> GetSuccessfullEventsWithNumericValue()
         {
-            throw new NotImplementedException();
+            return (await _dbConnection.GetListAsync<SensorEvent>(new { ValueType = EventValueType.Numeric })).AsList();
+            
         }
 
         public async Task Insert(SensorEvent sensorEvent)
