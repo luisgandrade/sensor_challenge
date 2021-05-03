@@ -37,9 +37,9 @@ namespace Challenge.Database.Repositories
         {
 
             return (await _dbConnection.QueryAsync<Sensor, int, KeyValuePair<Sensor, int>>(@"
-                SELECT s.id, s.country, s.region, s.name, COUNT(se.id) FROM Sensor s
-                INNER JOIN SensorEvent se on s.id = se.sensorId
-                GROUP BY s.id, s.country, s.region, s.name", (sensor, count) => new KeyValuePair<Sensor, int>(sensor, count))).ToList();
+                SELECT s.id, s.country, s.region, s.name, COUNT(se.id) count FROM Sensor s
+                LEFT JOIN SensorEvent se on s.id = se.sensorId
+                GROUP BY s.id, s.country, s.region, s.name", (sensor, count) => new KeyValuePair<Sensor, int>(sensor, count), splitOn: "count")).ToList();
         }
 
         public async Task Insert(Sensor sensor)

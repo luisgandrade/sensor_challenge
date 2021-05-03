@@ -9,6 +9,7 @@ namespace Challenge.Database.Interfaces
     public interface ISensorEventRepository
     {
 
+        Task<SensorEvent> Get(int id);
         Task Insert(SensorEvent sensorEvent);
 
         Task<IList<SensorEvent>> GetSuccessfullEventsWithNumericValue();

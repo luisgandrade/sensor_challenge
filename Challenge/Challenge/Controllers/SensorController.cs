@@ -1,4 +1,5 @@
-﻿using Challenge.Services;
+﻿using Challenge.Database.Interfaces;
+using Challenge.Services;
 using Challenge.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,10 +16,12 @@ namespace Challenge.Controllers
     public class SensorController : ControllerBase
     {
         private readonly SensorRepositoryInterface _sensorRepositoryInterface;
+        private readonly ISensorEventRepository _sensorEventRepository;
 
-        public SensorController(SensorRepositoryInterface sensorRepositoryInterface)
+        public SensorController(SensorRepositoryInterface sensorRepositoryInterface, ISensorEventRepository sensorEventRepository)
         {
             _sensorRepositoryInterface = sensorRepositoryInterface;
+            _sensorEventRepository = sensorEventRepository;
         }
 
         // GET: api/<SensorController>
@@ -52,6 +55,10 @@ namespace Challenge.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AddSensorViewModel viewModel)
         {
+            var existingSensor = await _sensorRepositoryInterface.Get(viewModel.Country, viewModel.Region, viewModel.Name);
+            if (existingSensor != null)
+                return BadRequest("Tag já associada a um sensor");
+
             var newSensor = await _sensorRepositoryInterface.Insert(viewModel.Country, viewModel.Region, viewModel.Name);
             return CreatedAtAction(nameof(Get), new { id = newSensor.Id });
         }
@@ -76,6 +83,22 @@ namespace Challenge.Controllers
                 }));
 
             return Ok(eventCountByTagVMs);
+        }
+
+        [HttpGet("numeric-events-data")]
+        public async Task<IActionResult> GetDataOfNumericEvents()
+        {
+            var eventsWithNumericValue = await _sensorEventRepository.GetSuccessfullEventsWithNumericValue();
+            var allSensors = await _sensorRepositoryInterface.GetAll();
+
+            var vms = allSensors.GroupJoin(eventsWithNumericValue, sr => sr.Id, se => se.SensorId, (s, se) => new SensorNumericEventsViewModel
+            {
+                SensorId = s.Id,
+                SensorTag = s.Country + "." + s.Region + "." + s.Name,
+                Data = se.Select(sev => new EventDataViewModel { Timestamp = sev.Timestamp, Value = double.Parse(sev.Value) }).ToList()
+            }).Where(sne => sne.Data.Any());
+
+            return Ok(vms);
         }
 
     }

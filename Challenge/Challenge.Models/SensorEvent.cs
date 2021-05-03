@@ -29,5 +29,10 @@ namespace Challenge.Models
             Value = value;
             ValueType = valueType;
         }
+
+        protected SensorEvent()
+        {
+
+        }
     }
 }

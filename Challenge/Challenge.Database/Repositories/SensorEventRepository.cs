@@ -5,6 +5,7 @@ using Dapper.Contrib.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,10 +17,15 @@ namespace Challenge.Database.Repositories
             : base(dbConnection)
         { }
 
+
+        public async Task<SensorEvent> Get(int id)
+        {
+            return await _dbConnection.GetAsync<SensorEvent>(id);
+        }
+
         public async Task<IList<SensorEvent>> GetSuccessfullEventsWithNumericValue()
         {
-            //return (await _dbConnection.GetListAsync<SensorEvent>(new { ValueType = EventValueType.Numeric })).AsList();
-            throw new NotImplementedException();
+            return (await _dbConnection.QueryAsync<SensorEvent>("SELECT * FROM SensorEvent WHERE valueType = @ValueType", new { ValueType = EventValueType.Numeric })).ToList();
         }
 
         public async Task Insert(SensorEvent sensorEvent)
