@@ -23,6 +23,11 @@ namespace Challenge.Database.Repositories
             return await _dbConnection.GetAsync<SensorEvent>(id);
         }
 
+        public async Task<IList<SensorEvent>> GetEventsAfterTimestamp(DateTime timestamp)
+        {
+            return (await _dbConnection.QueryAsync<SensorEvent>("SELECT * FROM SensorEvent WHERE timestamp >= @Timestamp", new { Timestamp = timestamp })).ToList();
+        }
+
         public async Task<IList<SensorEvent>> GetSuccessfullEventsWithNumericValue()
         {
             return (await _dbConnection.QueryAsync<SensorEvent>("SELECT * FROM SensorEvent WHERE valueType = @ValueType", new { ValueType = EventValueType.Numeric })).ToList();

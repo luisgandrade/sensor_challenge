@@ -95,7 +95,7 @@ namespace Challenge.Controllers
             {
                 SensorId = s.Id,
                 SensorTag = s.Country + "." + s.Region + "." + s.Name,
-                Data = se.Select(sev => new EventDataViewModel { Timestamp = sev.Timestamp, Value = double.Parse(sev.Value) }).ToList()
+                Data = se.Select(sev => new ChartEventDataViewModel { Timestamp = sev.Timestamp, Value = double.Parse(sev.Value) }).ToList()
             }).Where(sne => sne.Data.Any());
 
             return Ok(vms);

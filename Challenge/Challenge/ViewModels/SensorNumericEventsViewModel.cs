@@ -11,7 +11,7 @@ namespace Challenge.ViewModels
 
         public string SensorTag { get; set; }
 
-        public IList<EventDataViewModel> Data { get; set; }
+        public IList<ChartEventDataViewModel> Data { get; set; }
 
     }
 }

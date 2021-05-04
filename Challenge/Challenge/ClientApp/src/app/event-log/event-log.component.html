@@ -1,1 +1,30 @@
-<h1>Event log</h1>
+<h2>Log de eventos</h2>
+
+<br />
+
+<div *ngIf="errorOnFetchData">
+  <div class="alert alert-danger">Erro ao buscar dados</div>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>País</th>
+      <th>Região</th>
+      <th>Nome</th>
+      <th>Data</th>
+      <th>Erro</th>
+      <th>Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let event of events">
+      <td>{{event.country}}</td>
+      <td>{{event.region}}</td>
+      <td>{{event.name}}</td>
+      <td>{{event.timestamp | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+      <td>{{event.isError}}</td>
+      <td>{{event.value}}</td>
+    </tr>
+  </tbody>
+</table>

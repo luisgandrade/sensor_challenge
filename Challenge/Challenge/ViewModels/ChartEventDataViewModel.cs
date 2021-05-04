@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Challenge.ViewModels
 {
-    public class EventDataViewModel
+    public class ChartEventDataViewModel
     {
 
         public DateTime Timestamp { get; set; }

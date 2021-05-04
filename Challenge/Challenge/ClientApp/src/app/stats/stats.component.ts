@@ -1,18 +1,23 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { EventCountByTag } from '../models/EventCountByTag';
 import { SensorNumericEvents } from '../models/SensorNumericEvents';
 
 @Component({
-  selector: 'app-counter-component',
+  selector: 'app-stats-component',
   templateUrl: './stats.component.html'
 })
-export class StatsComponent {
+export class StatsComponent implements OnInit{
   eventCountByTag: EventCountByTag[] = [];
-  constructor(private http: HttpClient) {
+  hasData = true;
+  errorOnFetchChartData = false;
+  errorOnFetchCountData = false;
 
-    http.get<SensorNumericEvents[]>('http://localhost:14665/api/sensor/numeric-events-data').subscribe(next => {
+  constructor(private http: HttpClient) { }
+
+  ngOnInit() {
+    this.http.get<SensorNumericEvents[]>('http://localhost:14665/api/sensor/numeric-events-data').subscribe(next => {
       var chartOptions: any = {
         chart: {
           zoomType: 'x'
@@ -41,17 +46,17 @@ export class StatsComponent {
       };
 
       Highcharts.chart('chart', chartOptions);
+      this.hasData = this.hasData && next && next.length > 0;
 
 
 
+    }, _ => this.errorOnFetchChartData = true);
 
-    }, error => { });
-
-    http.get<EventCountByTag[]>('http://localhost:14665/api/sensor/event-count').subscribe(next => {
+    this.http.get<EventCountByTag[]>('http://localhost:14665/api/sensor/event-count').subscribe(next => {
       this.eventCountByTag = next;
-
-    }, error => {
-
-    });
+      this.hasData = this.hasData &&  next && next.length > 0;
+    }, _ => this.errorOnFetchCountData = true);
   }
+
+
 }

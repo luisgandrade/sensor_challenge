@@ -20,10 +20,10 @@ namespace Challenge.Services
             _sensorEventRepository = sensorEventRepository;
         }
 
-        private DateTime UnixTimestampToDatetime(int unixTimestamp)
+        private DateTime UnixTimestampToLocalDatetime(int unixTimestamp)
         {
-            var baseTimestamp = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            return baseTimestamp.AddSeconds(unixTimestamp);
+            var offset = DateTimeOffset.FromUnixTimeSeconds(unixTimestamp);
+            return offset.LocalDateTime;
         }
 
         public async Task<SensorEvent> LogEvent(AddSensorEventViewModel viewModel)
@@ -48,7 +48,7 @@ namespace Challenge.Services
             else if (!isError)
                 valueType = EventValueType.String;
 
-            var newSensorEvent = new SensorEvent(sensor, UnixTimestampToDatetime(viewModel.Timestamp), isError, viewModel.Value, valueType);
+            var newSensorEvent = new SensorEvent(sensor, UnixTimestampToLocalDatetime(viewModel.Timestamp), isError, viewModel.Value, valueType);
             await _sensorEventRepository.Insert(newSensorEvent);
 
             return newSensorEvent;

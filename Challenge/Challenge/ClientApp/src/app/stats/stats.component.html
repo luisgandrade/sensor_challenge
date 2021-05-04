@@ -1,13 +1,28 @@
-<h1>Stats</h1>
+<h1>Estatísticas</h1>
 
 
-<div id="chart"></div>
-
-<h4>Contagem de eventos por sensor e região</h4>
-<br />
-<div *ngFor="let eventCountOfTag of eventCountByTag">
-  <strong>{{eventCountOfTag.tag}}</strong>: {{eventCountOfTag.count}}
+<div *ngIf="!hasData">
+  <h2 style="text-align:center;">Não há sensores registrados</h2>
 </div>
+<div *ngIf="errorOnFetchChartData" class="alert alert-danger">
+  Erro ao buscar dados do gráfico
+</div>
+<div *ngIf="errorOnFetchCountData" class="alert alert-danger">
+  Erro ao buscar dados da contagem de eventos dos sensores
+</div>
+
+<div *ngIf="hasData">
+  <div id="chart"></div>
+
+  <h4>Contagem de eventos por sensor e região</h4>
+  <br />
+
+  <div *ngFor="let eventCountOfTag of eventCountByTag">
+    <strong>{{eventCountOfTag.tag}}</strong>: {{eventCountOfTag.count}}
+  </div>
+</div>
+
+
 
 
 

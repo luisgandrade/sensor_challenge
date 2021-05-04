@@ -1,27 +1,34 @@
-<h1>Adicionar novo sensor</h1>
 
+<form #f="ngForm" (ngSubmit)="submit(f)" novalidate class="offset-3 col-6">
+  <fieldset>
+    <legend>Adicionar novo sensor</legend>
+    <div class="form-group">
+      <label class="control-label">País</label>
+      <br />
+      <input class="form-control" name="country" [(ngModel)]="sensor.country" required />
+    </div>
 
-<form #f="ngForm" (ngSubmit)="submit(f)" novalidate>
-  <p>
-    <label for="country">País</label>
-    <br />
-    <input name="country" [(ngModel)]="sensor.country" required/>
-  </p>
+    <div class="form-group">
+      <label class="control-label" for="region">Região</label>
+      <br />
+      <input class="form-control" name="region" [(ngModel)]="sensor.region" required />
+    </div>
 
-  <p>
-    <label for="region">Região</label>
-    <br />
-    <input name="region" [(ngModel)]="sensor.region" required/>
-  </p>
+    <div class="form-group">
+      <label class="control-label" for="name">Nome</label>
+      <br />
+      <input class="form-control" name="name" [(ngModel)]="sensor.name" required />
+    </div>
+  </fieldset>
+  
 
-  <p>
-    <label for="name">Nome</label>
-    <br />
-    <input name="name" [(ngModel)]="sensor.name" required/>
-  </p>
+  <div *ngIf="f.submitted && f.invalid" class="alert alert-danger">
+    Todos os campos devem ser informados.
+  </div>
+  <div *ngIf="sensorAlreadyExists" class="alert alert-danger">
+    Já existe um sensor com a tag informada.
+  </div>  
 
-  <p *ngIf="f.submitted && f.invalid">Todos os campos devem ser informados.</p>
-
-  <button>Adicionar</button>
+  <button class="btn-primary ">Adicionar</button>
 </form>
 

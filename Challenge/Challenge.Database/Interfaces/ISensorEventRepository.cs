@@ -13,5 +13,8 @@ namespace Challenge.Database.Interfaces
         Task Insert(SensorEvent sensorEvent);
 
         Task<IList<SensorEvent>> GetSuccessfullEventsWithNumericValue();
+
+
+        Task<IList<SensorEvent>> GetEventsAfterTimestamp(DateTime timestamp);
     }
 }

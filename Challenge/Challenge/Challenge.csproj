@@ -27,7 +27,8 @@
   <ItemGroup>
     <None Remove="ClientApp\src\app\models\EventCountByTag.ts" />
     <None Remove="ClientApp\src\app\models\Sensor.ts" />
-    <None Remove="ClientApp\src\app\models\SensorEvent.ts" />
+    <None Remove="ClientApp\src\app\models\SensorEventForDisplay.ts" />
+    <None Remove="ClientApp\src\app\models\SensorEventForInsertion.ts" />
     <None Remove="ClientApp\src\app\models\SensorNumericEvents.ts" />
     <None Remove="ClientApp\src\app\services\sensor-event-generator.ts" />
   </ItemGroup>
@@ -39,10 +40,13 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\models\EventCountByTag.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\SensorEventForDisplay.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\app\models\SensorNumericEvents.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\app\models\SensorEvent.ts">
+    <TypeScriptCompile Include="ClientApp\src\app\models\SensorEventForInsertion.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\app\models\Sensor.ts" />

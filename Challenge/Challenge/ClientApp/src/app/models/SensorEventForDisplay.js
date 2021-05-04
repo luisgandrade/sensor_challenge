@@ -1,4 +1,4 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 ;
-//# sourceMappingURL=SensorEvent.js.map
+//# sourceMappingURL=SensorEventForDisplay.js.map
