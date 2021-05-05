@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { EventCountByTag } from '../models/EventCountByTag';
 import { SensorNumericEvents } from '../models/SensorNumericEvents';
+import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'app-stats-component',
@@ -17,7 +18,7 @@ export class StatsComponent implements OnInit{
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.http.get<SensorNumericEvents[]>('http://localhost:14665/api/sensor/numeric-events-data').subscribe(next => {
+    this.http.get<SensorNumericEvents[]>(environment.apiBaseUrl + 'api/sensor/numeric-events-data').subscribe(next => {
       var chartOptions: any = {
         chart: {
           zoomType: 'x'
@@ -52,7 +53,7 @@ export class StatsComponent implements OnInit{
 
     }, _ => this.errorOnFetchChartData = true);
 
-    this.http.get<EventCountByTag[]>('http://localhost:14665/api/sensor/event-count').subscribe(next => {
+    this.http.get<EventCountByTag[]>(environment.apiBaseUrl + 'api/sensor/event-count').subscribe(next => {
       this.eventCountByTag = next;
       this.hasData = this.hasData &&  next && next.length > 0;
     }, _ => this.errorOnFetchCountData = true);

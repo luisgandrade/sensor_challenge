@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+    app:
+        container_name: app
+        build: 
+            context: .
+        ports:
+            - "8080:80"
+        networks:
+            - net
+
+    sql-server:
+        container_name: sql-server
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        environment:
+            - SA_PASSWORD=$$3nh4-F4c1|
+            - ACCEPT_EULA=Y
+            - TZ=America/Sao_Paulo
+        ports:
+            - "1433:1433"
+        networks:
+            - net
+
+networks:
+        net:

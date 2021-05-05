@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { SensorEventForDisplay } from '../models/SensorEventForDisplay';
+import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'app-event-log.component',
@@ -14,7 +15,7 @@ export class EventLogComponent implements OnInit{
 
 
   private updateTable(httpClient: HttpClient) {
-    httpClient.get<SensorEventForDisplay[]>('http://localhost:14665/api/sensorEvent/all-events?from=' + this.lastUpdate.toISOString()).subscribe(next => {
+    httpClient.get<SensorEventForDisplay[]>(environment.apiBaseUrl + 'sensorEvent/all-events?from=' + this.lastUpdate.toISOString()).subscribe(next => {
       this.events.push(...next);
     }, _ => {
         this.errorOnFetchData = true;
@@ -24,7 +25,7 @@ export class EventLogComponent implements OnInit{
 
   ngOnInit() {
     this.lastUpdate = new Date();
-    this.http.get<SensorEventForDisplay[]>('http://localhost:14665/api/sensorEvent/all-events').subscribe(next => {
+    this.http.get<SensorEventForDisplay[]>(environment.apiBaseUrl + 'sensorEvent/all-events').subscribe(next => {
       this.events = next;
       setInterval(() => this.updateTable(this.http), 3000);
     }, _ => {

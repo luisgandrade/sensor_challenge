@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Sensor } from '../models/Sensor';
 import { SensorEventForInsertion } from '../models/SensorEventForInsertion';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class SensorEventGenerator{
   private numericSuccessfulEventRate = 0.5;
 
   constructor(private http: HttpClient) {
-    this.http.get<Sensor[]>('http://localhost:14665/api/sensor').subscribe(sensors => {
+    this.http.get<Sensor[]>(environment.apiBaseUrl + 'api/sensor').subscribe(sensors => {
       for (let sensor of sensors) {
         let tag = sensor.country + '.' + sensor.region + '.' + sensor.name;
         this.sensorsLoops[tag] = setInterval(() => this.generateEvent(tag), 3000);
@@ -35,7 +36,7 @@ export class SensorEventGenerator{
       value: value
     };
 
-    this.http.post('http://localhost:14665/api/sensorEvent', newSensorEvent).subscribe();
+    this.http.post(environment.apiBaseUrl + 'api/sensorEvent', newSensorEvent).subscribe();
     //  _ => {
       
     //}, error => {

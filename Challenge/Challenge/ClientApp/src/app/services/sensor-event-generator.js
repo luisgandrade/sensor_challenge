@@ -17,7 +17,7 @@ var SensorEventGenerator = /** @class */ (function () {
             timestamp: unixTimestamp,
             value: value
         };
-        this.http.post('http://localhost:14665/api/sensorEvent', newSensorEvent);
+      this.http.post('http://localhost:8080/api/sensorEvent', newSensorEvent);
         //send event
     };
     SensorEventGenerator.prototype.addSensor = function (tag) {
