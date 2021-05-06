@@ -1,4 +1,7 @@
+CREATE DATABASE SensorLog;
+GO
 USE SensorLog;
+GO
 
 CREATE TABLE Sensor(
 	id INT IDENTITY(1, 1) PRIMARY KEY,
@@ -14,3 +17,4 @@ CREATE TABLE SensorEvent(
 	[error] BIT NOT NULL DEFAULT 0,
 	[value] NVARCHAR(30),
 	valueType INT NOT NULL);
+GO

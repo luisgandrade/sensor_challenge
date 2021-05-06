@@ -12,9 +12,9 @@ import { environment } from '../../environments/environment'
 export class AddSensorComponent {
   sensor: Sensor = {
     id: null,
-    country: "",
-    region: "",
-    name: ""
+    country: '',
+    region: '',
+    name: ''
   };
   sensorAlreadyExists = false;
 
@@ -25,7 +25,11 @@ export class AddSensorComponent {
       return;
     this.sensorAlreadyExists = false;
     this.http.post(environment.apiBaseUrl + 'sensor', this.sensor).subscribe(_ => {
-      this.sensorEventGenerator.addSensor(this.sensor.country + '.' + this.sensor.region + '.' + this.sensor.name)
+      this.sensorEventGenerator.addSensor(this.sensor.country + '.' + this.sensor.region + '.' + this.sensor.name);
+      alert('Sensor registrado com sucesso');
+      this.sensor.country = '';
+      this.sensor.region = '';
+      this.sensor.name = '';
     }, error => {
         this.sensorAlreadyExists = true;
     })

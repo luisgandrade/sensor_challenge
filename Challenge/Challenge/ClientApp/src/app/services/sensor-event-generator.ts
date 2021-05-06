@@ -13,7 +13,7 @@ export class SensorEventGenerator{
   private numericSuccessfulEventRate = 0.5;
 
   constructor(private http: HttpClient) {
-    this.http.get<Sensor[]>(environment.apiBaseUrl + 'api/sensor').subscribe(sensors => {
+    this.http.get<Sensor[]>(environment.apiBaseUrl + 'sensor').subscribe(sensors => {
       for (let sensor of sensors) {
         let tag = sensor.country + '.' + sensor.region + '.' + sensor.name;
         this.sensorsLoops[tag] = setInterval(() => this.generateEvent(tag), 3000);
@@ -36,7 +36,7 @@ export class SensorEventGenerator{
       value: value
     };
 
-    this.http.post(environment.apiBaseUrl + 'api/sensorEvent', newSensorEvent).subscribe();
+    this.http.post(environment.apiBaseUrl + 'sensorEvent', newSensorEvent).subscribe();
     //  _ => {
       
     //}, error => {

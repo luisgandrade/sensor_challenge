@@ -18,7 +18,7 @@ export class StatsComponent implements OnInit{
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.http.get<SensorNumericEvents[]>(environment.apiBaseUrl + 'api/sensor/numeric-events-data').subscribe(next => {
+    this.http.get<SensorNumericEvents[]>(environment.apiBaseUrl + 'sensor/numeric-events-data').subscribe(next => {
       var chartOptions: any = {
         chart: {
           zoomType: 'x'
@@ -40,10 +40,13 @@ export class StatsComponent implements OnInit{
         series: next.map(n => {
           return {
             type: 'line',
-            name: n.sensorId,
+            name: n.sensorTag,
             data: n.data.map(n1 => [new Date(n1.timestamp).getTime(), n1.value])
           };
-        })
+        }),
+        time: {
+          timezoneOffset: 180
+        }
       };
 
       Highcharts.chart('chart', chartOptions);
@@ -53,7 +56,7 @@ export class StatsComponent implements OnInit{
 
     }, _ => this.errorOnFetchChartData = true);
 
-    this.http.get<EventCountByTag[]>(environment.apiBaseUrl + 'api/sensor/event-count').subscribe(next => {
+    this.http.get<EventCountByTag[]>(environment.apiBaseUrl + 'sensor/event-count').subscribe(next => {
       this.eventCountByTag = next;
       this.hasData = this.hasData &&  next && next.length > 0;
     }, _ => this.errorOnFetchCountData = true);

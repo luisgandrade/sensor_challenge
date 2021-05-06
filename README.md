@@ -1,74 +1,60 @@
 # Desafio para vaga de analista pleno/sênior
 
-## Considerações Gerais
-
-* Sua solução deverá ser desenvolvida em dotnet core 3.1+.
-
-* Devemos ser capazes de executar sua solução em uma VM limpa, com scripts de automatização de tarefas como Make, Shell Script ou similares. Esses scripts devem ser suficientes para rodarmos sua solução.
-
-* Considere que já temos o seguinte ambiente:
-    * Windows 10 Professional
-    * Ubuntu 18.0.4
-    * .NET Core 
-
-* No seu README, você deverá fazer uma explicação sobre a solução encontrada, tecnologias envolvidas e instrução de uso da solução. 
-
-* É interessante que você também registre ideias que gostaria de implementar caso tivesse mais tempo.
 
 
-## Problema
+## Executando a solução
 
-Imagine que você ficou responsável por construir um sistema que seja capaz de receber milhares de eventos por segundo de sensores espalhados pelo Brasil, nas regiões norte, nordeste, sudeste e sul. Seu cliente também deseja que na solução ele possa visualizar esses eventos de forma clara.
+* **Pré-requisitos**: Docker e docker-compose intalados
+* Entre na pasta `Challenge` através de algum shell e execute o comando
 
-Um evento é defino por um JSON com o seguinte formato:
-
-```json
-{
-   "timestamp": <Unix Timestamp ex: 1539112021301>,
-   "tag": "<string separada por '.' ex: brasil.sudeste.sensor01 >",
-   "valor" : "<string>"
-}
+```
+docker-compose up -d
 ```
 
-Descrição:
- * O campo timestamp é quando o evento ocorreu em UNIX Timestamp.
- * Tag é o identificador do evento, sendo composto de pais.região.nome_sensor.
- * Valor é o dado coletado de um determinado sensor (podendo ser numérico ou string).
+* Aplicação estará disponível em http://localhost:8080
+* **Observação**: após cadastrar sensores e sair da aplicação ou recarregar o SPA, é necessário entrar na página de adicionar sensor para iniciar o registro de novos eventos.
 
-## Requisitos
+## Stack usada
 
-* Sua solução deverá ser capaz de armazenar os eventos recebidos.
+![Stack implementada](Stack_implementada.png "Stack")
 
-* Considere um número de inserções de 1000 eventos/sec. Cada sensor envia um evento a cada segundo independente se seu valor foi alterado, então um sensor pode enviar um evento com o mesmo valor do segundo anterior.
+### Persistência
+Apesar do grande fluxo de dados, a quantidade de dados sendo escritos considerando o cenário informado ainda está num limite aceitável para um banco relacional de nível empresarial como Sql Server ou PostgreSQL.
+Minha primeira escolha era o Postgres devido a ser open source, possuir licença permissiva e ainda ser comparável com outros pagos. Porém, devido a um problema com como o Dapper gera as queries para execução, haveria necessidade de abandonar alguns padrões de nomenclatura para fazer funcionar com o ORM (há uma issue aberta no repositório para verificar esse problema). Dado o limite de tempo e o escopo desse projeto, optei pelo Sql Server.
+* Schema
+  * Prevendo a grade quantidade de eventos a serem inseridas, uma entidade pra identificar um sensor foi criada. O schema criado é como mostrado na figura abaixo:
 
-* Cada evento poderá ter o estado processado ou erro, caso o campo valor chegue vazio, o status do evento será erro caso contrário processado.
+![DB_Schema](DB_Schema.png "Schema")
 
-* Para visualização desses dados, sua solução deve possuir:
-    * Uma tabela que mostre todos os eventos recebidos. Essa tabela deve ser atualizada automaticamente.
-    * Um gráfico apenas para eventos com valor numérico.
+### ORM
+Fiz algunss testes com o Entity Framework, porém, abandonei-o em favor do Dapper devido a minha maior familiaridade com o repository pattern. Novamente, dado as restrições achei que seria mais fácil asssim. Porém, vale mencionar que o Dapper acaba tendo uma performance, em geral, melhor que outros ORMs por ser bem mais enxuto ao custo de um código um pouco mais complexo de se dar manutenção.
 
-* Para seu cliente, é muito importante que ele saiba o número de eventos que aconteceram por região e por sensor. Como no exemplo abaixo:
-    * Região sudeste e sul ambas com dois sensores (sensor01 e sensor02):
-        * brasil.sudeste - 1000
-        * brasil.sudeste.sensor01 - 700
-        * brasil.sudeste.sensor02 - 300
-        * brasil.sul - 1500
-        * brasil.sul.sensor01 - 1250
-        * brasil.sul.sensor02 - 250
+### Frontend
+Um SPA escrito em Angular foi escolhido para desenvolver o frontend. Alguns pontos sobre o frontend:
+* Para fins de testes, os usuários precisam adicionar os sensores manualmente em http://localhost:8080/add-sensor
+* O gráfico que registra os valores númericos salvos por sensor foi feito usando o Highcharts.js.
+* Atualmente, a tabela de log de eventos é atualizada fazendo pooling do backend e pegando eventos que foram registrador após a última iteração.
+* Há um serviço no frontend que simula a geração dos eventos. Para cada sensor registrado, é gerado um evento a cada 3 segundos.
 
-## Avaliação
+### Backend
 
-Nossa equipe de desenvolvedores irá avaliar código, simplicidade da solução, testes unitários, arquitetura e automatização de tarefas.
+A aplicação está dividida em três grandes áreas: controllers, serviços e reposítórios. 
+* **Controllers**: faz a comunicação com o frontend. Oferece operações de inserção e de listagem de recursos e acesso à funcionalidades mais avançadas
+* **Serviços**: aplica a lógica de negócio aos dados recebidos
+  * `SensorRepositoryInterface`: faz uma interface com o repositório de `Sensor` de modo a oferecer uma funcionalidade de caching de sensores. Essa decisão foi devido a utilização de uma tabela separada para representar sensores. Como cada `SensorEvent` precisa do id do `Sensor` associado, seria necessário buscar o `Sensor` no banco toda vez que um evento chegasse, o que pode pesar um pouco o banco. O cache foi modelado usando um `ConcurrentDictionary` estático. Funciona bem para quando há apenas uma instância da aplicação rodando. Pra múltiplas instâncias, já não é muito eficiente.
+  * `SensorEventsLogger`: aplica as regras de interpretação e de registro de um evento do sensor
+* **Repositórios**: fonte de consulta de dados
 
-Tente automatizar ao máximo sua solução. Isso porque no caso de deploy em vários servidores, não é interessante que tenhamos que entrar de máquina em máquina para instalar cada componente da solução.
+![Fluxo de dados](Fluxo_dados.png "Fluxo de dados")
 
-Em caso de dúvida, entre em contato com o responsável pelo seu processo seletivo.
+As setas indicam o fluxo de dados entre classes na aplicação.
 
-## Considerações de Avaliação 
+## Testes
+Foram feitos testes unitários que testam as regras de negócioem `SensorEventsLogger` e o caching em `SenorRepositoryInterface`.
 
-* Documentaçao do código
-* Organização/Legibilidade
-* Docker (importante como fator de desequilíbrio)
-* README e Makefile (este último não obrigatório, porém recomendado)
-* Testes unitários
-* Uso de dotNet core e de dotNet ef (este último não obrigatório, porém recomendado)
+## O que não deu tempo de implementar =/
+* Devido ao fluxo contínuo de eventos gerados pelos sensores, seria interessante a utilização de websockets para minimizar o custo de comunicação entre sensor e servidor. O SignalR fornece um framework que simplifica bastante o processo de implementação de websockets.
+* A tabela de log de eventos que o usuário pode acessar também se beneficiaria do uso de websockets. Como se trata de uma tabela que deve ser atualizada automaticamente, idealmente o servidor poderia enviar essa informação para o frontend assim que registrasse um novo evento.
+* O cache de `Sensor`s como está atualmente não funciona de maneira eficiente quando há múltiplas instâncias da aplicação rodando. Por esse motivo, uma solução de cache distribuída, como, por exemplo, o Redis, seria mais adequado.
+* Devido a algumas limitações do servidor Kestrel, seria interessante usar um proxy reverso na frente dele. Serviços como IIS, Apache ou Nginx são mais completos e podem simplifica o processo de load balancing e de configuração de comunicação segura.
+* A interface está bem crua.

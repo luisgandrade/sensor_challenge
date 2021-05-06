@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/mssql/server:2017-latest
+WORKDIR usr
+
+COPY entrypoint.sh entrypoint.sh
+COPY initDb.sh initDb.sh
+COPY SensorLogSchema.sql SensorLogSchema.sql
+
+RUN sed -i 's/\r//' entrypoint.sh
+RUN sed -i 's/\r//' initDb.sh
+RUN sed -i 's/\r//' SensorLogSchema.sql
+
+ENTRYPOINT /bin/bash ./entrypoint.sh
