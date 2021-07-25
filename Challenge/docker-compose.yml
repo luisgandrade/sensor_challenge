@@ -19,7 +19,7 @@ services:
             context: .
             dockerfile: SqlServerDockerfile
         environment:
-            - SA_PASSWORD=$$3nh4-F4c1|
+            - SA_PASSWORD=vAVv!Z$fn&Vp
             - ACCEPT_EULA=Y
             - TZ=America/Sao_Paulo
         ports:

@@ -24,13 +24,13 @@ namespace Challenge
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-
-            services.AddTransient<IDbConnection>(_ => SqlServerConnectionFactory.GetConnection(Configuration.GetConnectionString("sql-server")));
+        {            
             services.AddScoped<ISensorRepository, SensorRepository>();
             services.AddScoped<ISensorEventRepository, SensorEventRepository>();
             services.AddScoped<SensorEventsLogger>();
             services.AddScoped<SensorRepositoryInterface>();
+            services.AddTransient<IDbConnection>(_ => SqlServerConnectionFactory.GetConnection(Configuration.GetConnectionString("sql-server")));
+            services.AddSingleton<RedisAdapter>(new RedisAdapter(Configuration.GetConnectionString("redis")))
 
 
             services.AddCors(options =>

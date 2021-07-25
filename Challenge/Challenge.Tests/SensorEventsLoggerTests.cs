@@ -1,3 +1,4 @@
+using Challenge.Database.Interfaces;
 using Challenge.Database.Repositories;
 using Challenge.Models;
 using Challenge.Services;
@@ -45,10 +46,11 @@ namespace Challenge.Tests
             var country = "brasil";
             var region = "sudeste";
             var name = "sensor1";
-            var existingSensor = Mock.Of<Sensor>();
+            var sensorId = 1;
+            var existingSensor = Mock.Of<Sensor>(sensor => sensor.Id == sensorId);
             var viewModel = new AddSensorEventViewModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = (int)DateTime.Now.Ticks,
                 Tag = $"{country}.{region}.{name}",
                 Value = "1"
             };
@@ -59,7 +61,7 @@ namespace Challenge.Tests
 
             var sensorEvent = await sensorEventsLogger.LogEvent(viewModel);
 
-            Assert.Equal(existingSensor, sensorEvent.Sensor);
+            Assert.Equal(sensorId, sensorEvent.SensorId);
         }
 
         [Fact]
@@ -70,7 +72,7 @@ namespace Challenge.Tests
             var name = "sensor1";
             var viewModel = new AddSensorEventViewModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = (int)DateTime.Now.Ticks,
                 Tag = $"{country}.{region}.{name}",
                 Value = "1"
             };
@@ -92,7 +94,7 @@ namespace Challenge.Tests
             var existingSensor = Mock.Of<Sensor>();
             var viewModel = new AddSensorEventViewModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = (int)DateTime.Now.Ticks,
                 Tag = $"{country}.{region}.{name}",
                 Value = ""
             };
@@ -118,7 +120,7 @@ namespace Challenge.Tests
             var existingSensor = Mock.Of<Sensor>();
             var viewModel = new AddSensorEventViewModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = (int)DateTime.Now.Ticks,
                 Tag = $"{country}.{region}.{name}",
                 Value = value
             };
